@@ -15,10 +15,12 @@ public class gameManager : MonoBehaviour
     public playerController playerScript;
     public Image playerHPBar;
     public GameObject damageFlashPanel;
+    public Text killCountText;
 
     float timeScaleOrig;
 
     int gameGoalCount;
+    int killCount;
 
     void Awake()
     {
@@ -26,6 +28,8 @@ public class gameManager : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         playerScript = player.GetComponent<playerController>();
         timeScaleOrig = Time.timeScale;
+
+        killCountText.text = "Kills: 0";
     }
 
     void Update()
@@ -73,6 +77,18 @@ public class gameManager : MonoBehaviour
             menuActive = menuWin;
             menuActive.SetActive(true);
         }
+    }
+
+    public void addKill()
+    {
+        killCount++;
+
+        killCountText.text = "Kills: " + killCount;
+    }
+
+    public int getKillCount()
+    {
+        return killCount;
     }
 
     public void youLose()
