@@ -1,7 +1,6 @@
 using UnityEngine;
-using System.Collections;
 
-public class playerController : MonoBehaviour, IDamage
+public class playerController : MonoBehaviour
 {
     [SerializeField] CharacterController characterController;
     [SerializeField] LayerMask ignoreLayer;
@@ -28,7 +27,6 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         HPOrig = HP;
-        updatePlayerUI();
     }
 
     // Update is called once per frame
@@ -39,10 +37,6 @@ public class playerController : MonoBehaviour, IDamage
 
     void movement()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
-
-        shootTimer += Time.deltaTime;
-
         if (characterController.isGrounded)
         {
             jumpCount = 0;
@@ -58,7 +52,8 @@ public class playerController : MonoBehaviour, IDamage
 
         if (Input.GetButton("Fire1") && shootTimer > shootRate)
         {
-            shoot();
+            //TODO:
+            //shoot();
         }
     }
 
@@ -69,45 +64,5 @@ public class playerController : MonoBehaviour, IDamage
             jumpCount++;
             playerVel.y = jumpSpeed;
         }
-    }
-
-    void shoot()
-    {
-        shootTimer = 0;
-
-        RaycastHit hit;
-        if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
-        {
-            Debug.Log(hit.collider.name);
-            IDamage dmg = hit.collider.GetComponent<IDamage>();
-            if(dmg != null)
-            {
-                dmg.takeDamage(shootDamage);
-            }
-        }
-    }
-
-    public void takeDamage(int amount)
-    {
-        HP -= amount;
-        updatePlayerUI();
-        StartCoroutine(flashDamage());
-
-        if(HP <= 0)
-        {
-            gameManager.instance.youLose();
-        }
-    }
-
-    IEnumerator flashDamage()
-    {
-        gameManager.instance.damageFlashPanel.SetActive(true);
-        yield return new WaitForSeconds(0.1f);
-        gameManager.instance.damageFlashPanel.SetActive(false);
-    }
-
-    public void updatePlayerUI()
-    {
-        gameManager.instance.playerHPBar.fillAmount = (float)HP / HPOrig;
     }
 }
